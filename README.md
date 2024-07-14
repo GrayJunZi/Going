@@ -307,3 +307,58 @@ const (
 	Guest
 )
 ```
+
+## 五、控制结构
+
+- for 循环
+- range 遍历
+- break 退出循环
+
+### 1. for 循环
+
+使用 `for` 关键字进行指定次数循环。
+```go
+for i := 0; i < 10; i++ {
+	fmt.Println(i)
+}
+```
+
+也可以通过切片的长度，来实现遍历切片。
+```go
+numbers := []int{9, 8, 7, 6, 5, 4, 3, 2, 1}
+for i := 0; i < len(numbers); i++ {
+	fmt.Printf("numbers: %d\n", numbers[i])
+}
+```
+
+使用 `range` 关键字来遍历整个切片的内容，`i`循环的索引,`number`是元素值。
+```go
+for i, number := range numbers {
+	fmt.Printf("range: index %d, number %d\n", i, number)
+}
+```
+
+使用 `_` 来忽略索引，只获取值。
+```go
+for _, number := range numbers {
+	fmt.Printf("range: ignore index, number %d\n", number)
+}
+```
+
+使用 `break` 关键字来退出循环。
+```go
+users := map[string]int{
+	"foo":   1,
+	"bar":   2,
+	"baz":   3,
+	"alice": 4,
+	"bob":   5,
+}
+
+for key, value := range users {
+	if key == "alice" {
+		break
+	}
+	fmt.Printf("key: %s value: %d\n", key, value)
+}
+```
