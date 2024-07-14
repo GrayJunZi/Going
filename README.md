@@ -311,7 +311,7 @@ const (
 ## 五、控制结构
 
 - for 循环
-- range 遍历
+- range 循环
 - break 退出循环
 
 ### 1. for 循环
@@ -331,6 +331,8 @@ for i := 0; i < len(numbers); i++ {
 }
 ```
 
+### 2. range 循环
+
 使用 `range` 关键字来遍历整个切片的内容，`i`循环的索引,`number`是元素值。
 ```go
 for i, number := range numbers {
@@ -344,6 +346,8 @@ for _, number := range numbers {
 	fmt.Printf("range: ignore index, number %d\n", number)
 }
 ```
+
+### 3. 退出循环
 
 使用 `break` 关键字来退出循环。
 ```go
@@ -360,5 +364,73 @@ for key, value := range users {
 		break
 	}
 	fmt.Printf("key: %s value: %d\n", key, value)
+}
+```
+
+## 六、接口
+
+使用 `interface` 关键字来定义接口
+```go
+type NumberStorer interface {
+	GetAll() ([]int, error)
+	Put(int) error
+}
+```
+
+实现接口，由于Go中采用鸭子类型的设计，所以不需要显示实现接口，只要将接口中定义的所有方法及属性都实现就被认为是该接口的实现。
+```go
+// 定义 MongoDB 实现
+type MongoDBNumberStore struct {
+}
+
+func (m MongoDBNumberStore) GetAll() ([]int, error) {
+	return []int{1, 2, 3}, nil
+}
+
+func (m MongoDBNumberStore) Put(number int) error {
+	fmt.Printf("store the number %d into the MongoDB database.\n", number)
+	return nil
+}
+
+// 定义 Postgres 实现
+type PostgresNumberStore struct {
+}
+
+func (s PostgresNumberStore) GetAll() ([]int, error) {
+	return []int{1, 2, 3}, nil
+}
+
+func (s PostgresNumberStore) Put(number int) error {
+	fmt.Printf("store the number %d into the Postgres database.\n", number)
+	return nil
+}
+
+```
+
+> 鸭子类型：“如果它走起路来想鸭子，叫起来像鸭子，那么它就是鸭子。”
+> 也就是说在Go中具有某个接口的全部方法和属性，就被认为是该接口的实现。
+
+
+我们可以在结构体中定义某个接口的属性，然后在调用时传入该接口的具体实现。
+```go
+// 定义结构体
+type ApiServer struct {
+	numberStore NumberStorer
+}
+
+func main() {
+	apiServer := ApiServer{
+		numberStore: MongoDBNumberStore{},
+	}
+
+	if err := apiServer.numberStore.Put(123123); err != nil {
+		panic(err)
+	}
+
+	numbers, err := apiServer.numberStore.GetAll()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("The Numbers %+v\n", numbers)
 }
 ```
