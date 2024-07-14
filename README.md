@@ -282,3 +282,28 @@ func slice_demo() {
 type age int
 type weapon string
 ```
+
+## 四、枚举
+
+使用 `type` 定义类型后，结合 `const ()` 的方式将一组常量放在一起，可以组合成枚举的形式。
+```go
+type WeaponType int
+
+const (
+	Axe         WeaponType = 1
+	Sword       WeaponType = 2
+	Knife       WeaponType = 3
+	WoodenStick WeaponType = 4
+)
+```
+
+可以使用 `iota` 来进行简化操作，在第一个位置上为常量指定 iota，下面的常量中自动使用上面的类型并自动增长，初始值从0开始，然后每次加1。
+```go
+type RoleType int
+
+const (
+	Administrator RoleType = iota
+	Normal
+	Guest
+)
+```
