@@ -434,3 +434,93 @@ func main() {
 	fmt.Printf("The Numbers %+v\n", numbers)
 }
 ```
+
+## 七、包和模块
+
+### 1. 创建模块
+
+初始化模块
+```go
+go mod init myproject
+```
+
+编译项目
+```go
+go build -o ./myproject
+```
+
+运行项目
+```go
+./myproject
+```
+
+### 2. 定于包名
+
+可以通过 `package` 自定义包名，但需要注意的是同一个文件夹下，只能声明同一个包名否则将报错。
+```go
+package types
+
+type User struct {
+	Username string
+	Age      int
+}
+```
+
+使用某个包下面的结构时可以使用`import`将包导入进来。
+```go
+package main
+
+import (
+	"fmt"
+	"myproject/types"
+)
+
+func main() {
+	user := types.User{
+		Username: "James",
+		Age:      getNumber(),
+	}
+
+	fmt.Printf("%s is %d years old.\n", user.Username, user.Age)
+}
+```
+
+### 3. 访问性
+
+定义的结构体、函数、属性等，如果名称首字母大写将被认为是公开的，可以被外部访问，如果首字母是小写则被认为是私有的，外部无法进行访问，只能内部才可以访问。
+
+```go
+package util
+
+func GetUsername() string {
+	return "James"
+}
+
+func GetNumber() int {
+	return 84
+}
+
+```
+
+### 4. Makefile
+
+每次都要先编译项目然后再运行项目很麻烦，我们可以通过`Makefile`文件来简化操作。
+
+```makefile
+build:
+	@go build -o myapp
+
+run: build
+	@./myapp
+```
+
+安装 `make`
+```bash
+sudo apt install make
+sudo apt install make-guile
+```
+
+执行 `Makefile` 文件。
+```bash
+make run
+```
