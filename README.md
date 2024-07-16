@@ -524,3 +524,107 @@ sudo apt install make-guile
 ```bash
 make run
 ```
+
+## 八、高级类型
+
+### 1. 结构体
+
+go语言中没有继承操作，但是可以通过结构体的组合嵌套，来达到类似的目的。
+```go
+type Position struct {
+	x, y int
+}
+
+type Entity struct {
+	id      string
+	name    string
+	version string
+
+	Position
+}
+
+type SpecialEntity struct {
+	Entity
+	specialField float64
+}
+
+func main() {
+	e := &SpecialEntity{
+		specialField: 76.33,
+		Entity: Entity{
+			id:      "id 1",
+			name:    "my entity",
+			version: "version 1.0",
+			Position: Position{
+				x: 34,
+				y: 87,
+			},
+		},
+	}
+
+	fmt.Printf("%+v\n", e)
+
+	e.id = "new id"
+	e.x = 56
+	fmt.Printf("id: %s, x: %d\n", e.id, e.x)
+}
+```
+
+### 2. 结构体的指针函数调用
+```go
+type Position struct {
+	x, y int
+}
+
+func (p *Position) Move(val int) {
+	fmt.Println("The position is moved by:", val)
+}
+
+type Player struct {
+	Position
+}
+
+func main() {
+	p := Player{}
+	p.Move(1000)
+}
+```
+
+### 3. 枚举
+
+可以为枚举编写一个`String`函数，用于将枚举转换为字符串。
+
+```go
+type Color int
+
+const (
+	ColorRed Color = iota
+	ColorBlue
+	ColorGreen
+	ColorBlack
+	ColorYellow
+)
+
+func (c Color) String() string {
+	switch c {
+	case ColorRed:
+		return "RED"
+	case ColorBlue:
+		return "BLUE"
+	case ColorGreen:
+		return "GREEN"
+	case ColorBlack:
+		return "BLACK"
+	case ColorYellow:
+		return "YELLOW"
+	default:
+		panic("invalid color given.")
+	}
+}
+
+
+func main() {
+	fmt.Println("this red color is:", ColorRed)
+	fmt.Println("this black color is:", ColorBlack)
+}
+```
