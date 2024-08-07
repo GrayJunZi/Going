@@ -742,3 +742,81 @@ func main() {
 	m2.Insert(2, 89.23)
 }
 ```
+
+## 十一、指针
+
+在go中，将某个值传入到函数中，都会在内存中得到一个该值的副本，对这个副本的所有操作都不会影响原始值。
+```go
+package main
+
+import "fmt"
+
+type Player struct {
+	HP int
+}
+
+func TakeDamage(player Player, amount int) {
+	player.HP -= amount
+	fmt.Println("player is taking damage. NEW HP -> ", player.HP)
+}
+
+func main() {
+	player := Player{
+		HP: 100,
+	}
+	TakeDamage(player, 10)
+	fmt.Printf("%+v\n", player)
+}
+```
+
+当函数接收一个指针的时候，将不会创建该值的副本，而是找到指针指向的内存空间，对该指针的所有操作都会影响到原始值，因为指针指向的内存地址为同一块区域。
+```go
+package main
+
+import "fmt"
+
+type Player struct {
+	HP int
+}
+
+func TakeDamage(player *Player, amount int) {
+	player.HP -= amount
+	fmt.Println("player is taking damage. NEW HP -> ", player.HP)
+}
+
+func main() {
+	player := Player{
+		HP: 100,
+	}
+	TakeDamage(&player, 10)
+	fmt.Printf("%+v\n", player)
+}
+```
+
+下面的使用方式与上面等效
+```go
+func main() {
+	player := &Player{
+		HP: 100,
+	}
+	TakeDamage(player, 10)
+	fmt.Printf("%+v\n", player)
+}
+```
+
+我们也可以定义函数接收器使用起来会更方便。
+```go
+// 函数接收器
+func (p *Player) TakeDamage(amount int) {
+	p.HP -= amount
+	fmt.Println("player is taking damage. NEW HP -> ", p.HP)
+}
+
+func main() {
+	player := &Player{
+		HP: 100,
+	}
+	player.TakeDamage(10)
+	fmt.Printf("%+v\n", player)
+}
+```
