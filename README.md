@@ -820,3 +820,86 @@ func main() {
 	fmt.Printf("%+v\n", player)
 }
 ```
+
+## 十二、测试
+
+1. 创建一个 `main.go` 文件，并添加一个函数。
+```go
+package main
+
+type Player struct {
+	name string
+	hp   int
+}
+
+func calculateValues(x int, y int) int {
+	return x + y
+}
+
+func main() {
+
+}
+```
+
+添加测试代码，只需要创建一个和需要测试的文件同名并追加`_test`后缀的文件即可。例如 `main_test.go`。
+
+添加测试方法命名通常以`Test`开头后面跟上要测试的方法名称。
+
+```go
+package main
+
+import (
+	"reflect"
+	"testing"
+)
+
+func TestEqualPlayers(t *testing.T) {
+	expected := Player{
+		name: "Mark",
+		hp:   100,
+	}
+
+	have := Player{
+		name: "Alice",
+		hp:   59,
+	}
+
+	if !reflect.DeepEqual(expected, have) {
+		t.Errorf("expected %+v but got %+v", expected, have)
+	}
+}
+
+func TestCalculateValues(t *testing.T) {
+	var (
+		expected = 10
+		a        = 5
+		b        = 6
+	)
+
+	have := calculateValues(a, b)
+	if have != expected {
+		t.Errorf("excepted %d but have %d", expected, have)
+	}
+}
+
+```
+
+使用以下命令运行测试
+```bash
+go test ./...
+```
+
+要显示更详细的测试信息需要加 `-v`。
+```bash
+go test -v ./...
+```
+
+2. 我们可以指定测试某个方法。
+```go
+go test ./ -v -run TestEqualPlayers
+```
+
+3. 测试过的代码会将结果存入缓存中，可以通过`-count=1`的方式指定不使用缓存。
+```
+go test ./ -v -run TestEqualPlayers -count=1
+```
