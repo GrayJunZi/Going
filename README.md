@@ -1,23 +1,39 @@
 # Going
 
-## 一、安装
+---
 
-### 1. 下载SDK
+Full Time Go Dev
+
+1. [x] 介绍
+2. [x] Golang 入门
+3. [ ] 掌握并发
+4. [ ] 酒店预订项目 JSON API
+5. [ ] 构建微服务
+6. [ ] 找工作指南
+7. [ ] 掌握核心区块链开发
+8. [ ] 编程会话
+
+
+# 一、Golang 入门
+
+## 1. 安装
+
+### (1). 下载SDK
 
 进入[官方下载地址](https://go.dev/dl/)进行SDK下载。
 
-### 2. 选择目标操作系统
+### (2). 选择目标操作系统
 
 这里使用`Ubuntu 24.02`系统作为示例。
 
-### 3. 下载途径
+### (3). 下载途径
 
 - `直接下载` - 直接根据操作系统，选择对应安装包进行下载。
     - 通过 `sftp username@ip` 进入linux中，并使用 `put <local_path> <remote_path>` 命令将文件上传至linux系统中。
 - `命令行下载:`
     - 通过命令 `wget https://go.dev/dl/go1.22.5.linux-amd64.tar.gz` 进行下载。
 
-### 4. 解压`tar.gz`安装包
+### (4). 解压`tar.gz`安装包
 
 使用`tar`命令将压缩包进行解压。
 ```bash
@@ -29,7 +45,7 @@ tar -xvf go1.22.5.linux-amd64.tar.gz
 sudo mv go /usr/local
 ```
 
-### 5. 设置环境变量
+### (5). 设置环境变量
 
 在 `/etc/profile`文件中添加以下内容
 ```bash
@@ -51,14 +67,14 @@ which go
 go version
 ```
 
-### 6. 设置环境变量为国内代理
+### (6). 设置环境变量为国内代理
 
 ```bash
 go env -w GO111MODULE=on
 go env -w GOPROXY=https://goproxy.cn,direct
 ```
 
-## 二、变量与常量
+## 2. 变量与常量
 
 - 全局变量
 - 局部变量
@@ -67,7 +83,7 @@ go env -w GOPROXY=https://goproxy.cn,direct
 
 在函数外声明的所有变量都称为全局变量，在函数内部声明的变量称为局部变量。
 
-### 1. 变量
+### (1). 变量
 ```go
 package main
 
@@ -110,7 +126,7 @@ func main() {
 
 > 使用 `go run main.go` 命令运行go文件。
 
-### 2. 常量
+### (2). 常量
 ```go
 package main
 
@@ -131,7 +147,7 @@ func main() {
 }
 ```
 
-## 三、内置类型与自定义类型
+## 3. 内置类型与自定义类型
 
 - 基本数据类型
 - 结构体(structs)
@@ -141,7 +157,7 @@ func main() {
 - 自定义类型
 
 
-### 1. 基本数据类型
+### (1). 基本数据类型
 
 定义几种常见的基本数据类型
 ```go
@@ -156,7 +172,7 @@ var (
 )
 ```
 
-### 2. 结构体
+### (2). 结构体
 
 使用 `type` 以及 `struct` 关键字定义结构体类型，如果结构体中没有任何东西时，将不会占用任何内存。 
 ```go
@@ -196,7 +212,7 @@ func struct_demo() {
 }
 ```
 
-### 3. map 类型
+### (3). map 类型
 
 通过 `map` 关键字来定义映射。
 ```go
@@ -243,7 +259,7 @@ func maps_demo() {
 }
 ```
 
-### 4. 切片
+### (4). 切片
 
 使用 `[]int{}` 定义空的切片
 ```go
@@ -275,7 +291,7 @@ func slice_demo() {
 }
 ```
 
-### 5. 自定义类型
+### (5). 自定义类型
 
 使用 `type` 来自定义类型
 ```go
@@ -283,7 +299,7 @@ type age int
 type weapon string
 ```
 
-## 四、枚举
+## 4. 枚举
 
 使用 `type` 定义类型后，结合 `const ()` 的方式将一组常量放在一起，可以组合成枚举的形式。
 ```go
@@ -308,13 +324,13 @@ const (
 )
 ```
 
-## 五、控制结构
+## 5. 控制结构
 
 - for 循环
 - range 循环
 - break 退出循环
 
-### 1. for 循环
+### (1). for 循环
 
 使用 `for` 关键字进行指定次数循环。
 ```go
@@ -331,7 +347,7 @@ for i := 0; i < len(numbers); i++ {
 }
 ```
 
-### 2. range 循环
+### (2). range 循环
 
 使用 `range` 关键字来遍历整个切片的内容，`i`循环的索引,`number`是元素值。
 ```go
@@ -347,7 +363,7 @@ for _, number := range numbers {
 }
 ```
 
-### 3. 退出循环
+### (3). 退出循环
 
 使用 `break` 关键字来退出循环。
 ```go
@@ -367,9 +383,10 @@ for key, value := range users {
 }
 ```
 
-## 六、接口
+## 6. 接口
 
-使用 `interface` 关键字来定义接口
+
+### (1). 使用 `interface` 关键字来定义接口
 ```go
 type NumberStorer interface {
 	GetAll() ([]int, error)
@@ -435,9 +452,9 @@ func main() {
 }
 ```
 
-## 七、包和模块
+## 7. 包和模块
 
-### 1. 创建模块
+### (1). 创建模块
 
 初始化模块
 ```go
@@ -454,7 +471,7 @@ go build -o ./myproject
 ./myproject
 ```
 
-### 2. 定于包名
+### (2). 定义包名
 
 可以通过 `package` 自定义包名，但需要注意的是同一个文件夹下，只能声明同一个包名否则将报错。
 ```go
@@ -485,7 +502,7 @@ func main() {
 }
 ```
 
-### 3. 访问性
+### (3). 访问性
 
 定义的结构体、函数、属性等，如果名称首字母大写将被认为是公开的，可以被外部访问，如果首字母是小写则被认为是私有的，外部无法进行访问，只能内部才可以访问。
 
@@ -502,7 +519,7 @@ func GetNumber() int {
 
 ```
 
-### 4. Makefile
+### (4). Makefile
 
 每次都要先编译项目然后再运行项目很麻烦，我们可以通过`Makefile`文件来简化操作。
 
@@ -525,9 +542,9 @@ sudo apt install make-guile
 make run
 ```
 
-## 八、高级类型
+## 8. 高级类型
 
-### 1. 结构体
+### (1). 结构体
 
 go语言中没有继承操作，但是可以通过结构体的组合嵌套，来达到类似的目的。
 ```go
@@ -570,7 +587,7 @@ func main() {
 }
 ```
 
-### 2. 结构体的指针函数调用
+### (2). 结构体的指针函数调用
 ```go
 type Position struct {
 	x, y int
@@ -590,7 +607,7 @@ func main() {
 }
 ```
 
-### 3. 枚举
+### (3). 枚举
 
 可以为枚举编写一个`String`函数，用于将枚举转换为字符串。
 
@@ -629,9 +646,9 @@ func main() {
 }
 ```
 
-## 九、高级接口与类型函数
+## 9. 高级接口与类型函数
 
-### 1. 接口组合
+### (1). 接口组合
 ```go
 package main
 
@@ -677,7 +694,7 @@ func main() {
 }
 ```
 
-### 2. 定义函数类型
+### (2). 定义函数类型
 
 在函数定义中可以返回另一个函数
 ```go
@@ -710,7 +727,7 @@ func main() {
 }
 ```
 
-## 十、泛型
+## 10. 泛型
 
 
 在定义的类型中使用 `[]` 定义泛型参数列表。
@@ -743,7 +760,7 @@ func main() {
 }
 ```
 
-## 十一、指针
+## 11. 指针
 
 在go中，将某个值传入到函数中，都会在内存中得到一个该值的副本，对这个副本的所有操作都不会影响原始值。
 ```go
@@ -821,9 +838,9 @@ func main() {
 }
 ```
 
-## 十二、测试
+## 12. 测试
 
-1. 创建一个 `main.go` 文件，并添加一个函数。
+### (1). 创建一个 `main.go` 文件，并添加一个函数。
 ```go
 package main
 
@@ -894,12 +911,79 @@ go test ./...
 go test -v ./...
 ```
 
-2. 我们可以指定测试某个方法。
+### (2). 我们可以指定测试某个方法。
 ```go
 go test ./ -v -run TestEqualPlayers
 ```
 
-3. 测试过的代码会将结果存入缓存中，可以通过`-count=1`的方式指定不使用缓存。
+### (3). 测试过的代码会将结果存入缓存中，可以通过`-count=1`的方式指定不使用缓存。
 ```
 go test ./ -v -run TestEqualPlayers -count=1
 ```
+
+# 二、Golang 并发
+
+## 13. goroutines 和 channels 介绍
+
+并发是Go语言中真正发光的地方。
+
+### (1). 使用`go`关键字很容易就开启一个协程(goroutine)。
+```go
+package main
+
+import (
+	"time"
+)
+
+func main() {
+	// 开启协程
+	go fetchResource(1)
+}
+
+func fetchResource(n int) string {
+	time.Sleep(time.Second * 2)
+	return fmt.Sprintf("result %d", n)
+}
+```
+
+也可以调用匿名函数
+```go
+func main() {
+	// 调用匿名函数
+	go func() {
+		result := fetchResource(1)
+		fmt.Println(result)
+	}()
+}
+```
+
+### (2). 使用 `chan` 来声明一个 channel
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	// 无缓冲通道
+	resultch := make(chan string)
+
+	// 有缓冲通道
+	// resultch2 := make(chan string, 10)
+
+
+	// 将数据写入 channel 中
+	resultch <- "foo"
+
+	// 将数据从 channel 中读取出来
+	result := <-resultch
+
+	fmt.Println(result)
+}
+```
+
+`channel` 有两种类型，一种是无缓冲通道(unbuffered channel)，另一种是有缓冲通道(buffered channel)。
+
+> Go语言中的 `channel` 无论是 无缓冲通道还是有缓冲通道 只要通道的内容已满 则将会阻塞。
+>
+> 无缓冲通道当写入一个数据时就会进行阻塞。当通道中没有数据时，读取通道将也会进行阻塞。 
