@@ -987,3 +987,68 @@ func main() {
 > Go语言中的 `channel` 无论是 无缓冲通道还是有缓冲通道 只要通道的内容已满 则将会阻塞。
 >
 > 无缓冲通道当写入一个数据时就会进行阻塞。当通道中没有数据时，读取通道将也会进行阻塞。 
+
+## 14. 使用 Channel
+
+### (1). 使用 `<-` 写入数据到channel中。
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	// 缓冲长度最好是使用2的次方
+	msgch := make(chan string, 128)
+	msgch <- "A"
+	msgch <- "B"
+	msgch <- "C"
+}
+```
+
+### (2). 循环从channel中读取数据
+
+注意如果此时不使用`close`将channel关闭将会在运行过程中产生死锁。
+```go
+package main
+
+import "fmt"
+
+func main() {
+	msgch := make(chan string, 128)
+	msgch <- "A"
+	msgch <- "B"
+	msgch <- "C"
+	close(msgch)
+
+	for msg := range msgch {
+		fmt.Println("the msg is:", msg)
+	}
+}
+
+```
+
+### 3. 从channel获取数据时还可以额外获取一个状态
+
+```go
+package main
+
+import "fmt"
+
+func main() {
+	msgch := make(chan string, 128)
+	msgch <- "A"
+	msgch <- "B"
+	msgch <- "C"
+	close(msgch)
+
+	for {
+		msg, ok := <-msgch
+		if !ok {
+			return
+		}
+
+		fmt.Println(msg)
+	}
+}
+```
