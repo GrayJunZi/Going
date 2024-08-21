@@ -1028,7 +1028,7 @@ func main() {
 
 ```
 
-### 3. 从channel获取数据时还可以额外获取一个状态
+### (3). 从channel获取数据时还可以额外获取一个状态
 
 ```go
 package main
@@ -1115,4 +1115,89 @@ func main() {
 
 	server.start()
 }
+```
+
+## 16. 互斥与原子值
+
+Go语言中并发性是很重要的东西，这基本上是该语言被构建的原因。
+
+### (1). 使用 `mutex` 来实现互斥
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+type State struct {
+	mu      sync.Mutex
+	count   int
+	count32 int32
+}
+
+func (s *State) setCount(i int) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.count += i
+}
+
+func main() {
+	state := &State{}
+	wg := sync.WaitGroup{}
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+
+		go func(i int) {
+			state.setCount(i + 1)
+			wg.Done()
+		}(i)
+	}
+
+	wg.Wait()
+	fmt.Println("%+v\n", state)
+}
+
+```
+
+
+### (2). 使用 `atomic` 来实现原子操作
+
+```go
+package main
+
+import (
+	"fmt"
+	"sync"
+	"sync/atomic"
+)
+
+type State struct {
+	mu      sync.Mutex
+	count int32
+}
+
+func (s *State) setCount(i int) {
+	atomic.AddInt32(&s.count, int32(i))
+}
+
+func main() {
+	state := &State{}
+	wg := sync.WaitGroup{}
+
+	for i := 0; i < 10; i++ {
+		wg.Add(1)
+
+		go func(i int) {
+			state.setCount(i + 1)
+			wg.Done()
+		}(i)
+	}
+
+	wg.Wait()
+	fmt.Println("%+v\n", state)
+}
+
 ```
