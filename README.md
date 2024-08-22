@@ -1201,3 +1201,169 @@ func main() {
 }
 
 ```
+
+## 17. context 包
+
+假设我们请求第三方的接口，如果该接口响应时间很长，我们不希望一直等待，而是有个超时机制，那么就可以使用`context`中已经定义好的超时机制来实现。
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"log"
+	"time"
+)
+
+func main() {
+	start := time.Now()
+	ctx := context.WithValue(context.Background(), "username", "grayjunzi")
+	userId, err := fetchUserData(ctx)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("the response took %v -> %+v\n", time.Since(start), userId)
+}
+
+func fetchUserData(ctx context.Context) (string, error) {
+	ctx, cancel := context.WithTimeout(ctx, time.Millisecond*100)
+	defer cancel()
+
+	val := ctx.Value("username")
+	fmt.Println("the value = ", val)
+
+	type result struct {
+		userId string
+		err    error
+	}
+	resultch := make(chan result, 1)
+
+	go func() {
+		res, err := fetchData()
+		resultch <- result{
+			userId: res,
+			err:    err,
+		}
+	}()
+
+	select {
+	// Done
+	// 1. -> context 已经超时
+	// 2. -> context 已经被手动取消
+	case <-ctx.Done():
+		return "", ctx.Err()
+	case res := <-resultch:
+		return res.userId, res.err
+	}
+}
+
+func fetchData() (string, error) {
+	time.Sleep(time.Millisecond * 100)
+	return "user id 1", nil
+}
+```
+
+## 18. 实际例子
+
+```go
+package main
+
+import (
+	"fmt"
+	"log"
+	"sync"
+	"time"
+)
+
+type UserProfile struct {
+	Id       int
+	Comments []string
+	Likes    int
+	Friends  []int
+}
+
+type Response struct {
+	data any
+	err  error
+}
+
+func handleGetUserProfile(id int) (*UserProfile, error) {
+	var (
+		respch = make(chan Response, 3)
+		wg     = &sync.WaitGroup{}
+	)
+	go getComments(id, respch, wg)
+	go getLikes(id, respch, wg)
+	go getFriends(id, respch, wg)
+	wg.Add(3)
+	wg.Wait()
+	close(respch)
+
+	userProfile := &UserProfile{}
+	for resp := range respch {
+		if resp.err != nil {
+			return nil, resp.err
+		}
+		switch msg := resp.data.(type) {
+		case int:
+			userProfile.Likes = msg
+		case []int:
+			userProfile.Friends = msg
+		case []string:
+			userProfile.Comments = msg
+		}
+	}
+
+	return userProfile, nil
+}
+
+func getComments(id int, respch chan Response, wg *sync.WaitGroup) {
+	time.Sleep(time.Millisecond * 200)
+	comments := []string{
+		"Hey, that was great",
+		"Yeah Buddy",
+		"Ow, I didnt know that",
+	}
+	respch <- Response{
+		data: comments,
+		err:  nil,
+	}
+
+	wg.Done()
+}
+
+func getLikes(id int, respch chan Response, wg *sync.WaitGroup) {
+	time.Sleep(time.Millisecond * 200)
+
+	respch <- Response{
+		data: 14,
+		err:  nil,
+	}
+
+	wg.Done()
+}
+
+func getFriends(id int, respch chan Response, wg *sync.WaitGroup) {
+	time.Sleep(time.Millisecond * 200)
+
+	friendIds := []int{12, 43, 65, 87}
+	respch <- Response{
+		data: friendIds,
+		err:  nil,
+	}
+
+	wg.Done()
+}
+
+func main() {
+	start := time.Now()
+	userProfile, err := handleGetUserProfile(10)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println(userProfile)
+	fmt.Println("fetching te user profile took", time.Since(start))
+}
+```
