@@ -1478,3 +1478,8 @@ func main() {
 ```
 docker run -d -p 27017:27017 --name mongodb mongodb/mongodb-community-server:latest
 ```
+
+### (5). 安装加密库
+```bash
+go get golang.org/x/crypto/bcrypt
+```

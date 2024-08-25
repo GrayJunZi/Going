@@ -12,7 +12,9 @@ import (
 const userCollection = "users"
 
 type UserStore interface {
+	GetUsers(context.Context) ([]*types.User, error)
 	GetUserById(context.Context, string) (*types.User, error)
+	CreateUser(context.Context, *types.User) (*types.User, error)
 }
 
 type MongoUserStore struct {
@@ -28,6 +30,19 @@ func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
 	}
 }
 
+func (m *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User, error) {
+	cur, err := m.collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+
+	var users []*types.User
+	if err = cur.All(ctx, &users); err != nil {
+		return []*types.User{}, err
+	}
+	return users, nil
+}
+
 func (m *MongoUserStore) GetUserById(ctx context.Context, id string) (*types.User, error) {
 	oid, err := primitive.ObjectIDFromHex(id)
 	if err != nil {
@@ -39,4 +54,13 @@ func (m *MongoUserStore) GetUserById(ctx context.Context, id string) (*types.Use
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (m *MongoUserStore) CreateUser(ctx context.Context, user *types.User) (*types.User, error) {
+	res, err := m.collection.InsertOne(ctx, user)
+	if err != nil {
+		return nil, err
+	}
+	user.Id = res.InsertedID.(primitive.ObjectID)
+	return user, nil
 }
