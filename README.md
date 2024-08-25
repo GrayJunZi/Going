@@ -1367,3 +1367,108 @@ func main() {
 	fmt.Println("fetching te user profile took", time.Since(start))
 }
 ```
+
+## 19. 酒店预订项目
+
+### (1). 项目概述
+
+- 用户 -> 浏览酒店房间
+- 管理员 -> 检查预约和预订
+- 身份认证与鉴权 -> JWT
+- 酒店 -> 增删改查的API
+- 房间 -> 增删改查的API
+- 脚本 -> 数据库管理、种子、迁移
+
+### (2). 初始化项目
+
+1. 初始化模块
+```go
+go mod init github.com/grayjunzi/hotel-reservation
+```
+
+2. 安装 gofiber
+```go
+go get github.com/gofiber/fiber/v2
+```
+3. 安装 MongoDB 驱动
+```go
+go get go.mongodb.org/mongo-driver/mongo
+```
+
+4. 创建Makefile简化命令
+```makefile
+build:
+	go build -o bin/api
+
+run: build
+	./bin/api
+
+test:
+# 使用 @ 符号 隐藏输出
+	@go test -v ./...
+```
+
+### (3). 添加路由
+
+使用 fiber 来添加路由。
+```go
+package main
+
+import (
+	"github.com/gofiber/fiber/v2"
+)
+
+func main() {
+	app := fiber.New()
+
+	app.Get("/foo", func(c *fiber.Ctx) error {
+		return c.JSON(map[string]string{"msg": "i'm working on it."})
+	})
+
+	app.Listen(":5000")
+}
+```
+
+可以使用`Group`声明一组路由。
+```go
+package main
+
+import (
+	"github.com/gofiber/fiber/v2"
+	"github.com/grayjunzi/hotel-reservation/api"
+)
+
+func main() {
+	app := fiber.New()
+
+	v1 := app.Group("/api/v1")
+
+	v1.Get("/user", api.HandleGetUser)
+
+	app.Listen(":5000")
+}
+```
+
+使用`flag`从命令行中读取配置信息。
+```go
+package main
+
+import (
+	"flag"
+
+	"github.com/gofiber/fiber/v2"
+	"github.com/grayjunzi/hotel-reservation/api"
+)
+
+func main() {
+	listenAddr := flag.String("listenAddr", ":5000", "The listen address of the API server")
+	flag.Parse()
+	app := fiber.New()
+
+	v1 := app.Group("/api/v1")
+
+	v1.Get("/user", api.HandleGetUser)
+
+	app.Listen(*listenAddr)
+}
+```
