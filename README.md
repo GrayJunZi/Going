@@ -1472,3 +1472,9 @@ func main() {
 	app.Listen(*listenAddr)
 }
 ```
+
+### (4). 创建MongoDB容器
+
+```
+docker run -d -p 27017:27017 --name mongodb mongodb/mongodb-community-server:latest
+```
