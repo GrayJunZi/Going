@@ -40,18 +40,18 @@ func NewUserFromParams(params CreateUserParams) (*User, error) {
 	}, nil
 }
 
-func (params *CreateUserParams) Validate() []string {
-	errors := []string{}
+func (params *CreateUserParams) Validate() map[string]string {
+	var errors = make(map[string]string)
 	if len(params.Name) < minNameLen {
-		errors = append(errors, fmt.Sprintf("name length should be at least %d characters", minNameLen))
+		errors["name"] = fmt.Sprintf("name length should be at least %d characters", minNameLen)
 	}
 
 	if len(params.Password) < minPasswordLen {
-		errors = append(errors, fmt.Sprintf("password length should be at least %d characters", minPasswordLen))
+		errors["password"] = fmt.Sprintf("password length should be at least %d characters", minPasswordLen)
 	}
 
 	if !isEmailValid(params.Email) {
-		errors = append(errors, "email is invalid")
+		errors["email"] = "email is invalid"
 	}
 
 	return errors
@@ -60,4 +60,9 @@ func (params *CreateUserParams) Validate() []string {
 func isEmailValid(e string) bool {
 	emailRegex := regexp.MustCompile(`^[a-z-9._%]+@[a-z0-9.\-]+\.[a-z]{2,4}$`)
 	return emailRegex.MatchString(e)
+}
+
+type UpdateUserParams struct {
+	Name  string `bson:"name" json:"name"`
+	Email string `bson:"email" json:"email"`
 }
