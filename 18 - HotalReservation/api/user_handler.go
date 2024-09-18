@@ -53,7 +53,6 @@ func (h *UserHandler) AddUser(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-
 	insertedUser, err := h.userStore.CreateUser(c.Context(), user)
 	if err != nil {
 		return err

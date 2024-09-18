@@ -11,7 +11,12 @@ import (
 
 const userCollection = "users"
 
+type Dropper interface {
+	Drop(context.Context) error
+}
+
 type UserStore interface {
+	Dropper
 	GetUsers(context.Context) ([]*types.User, error)
 	GetUserById(context.Context, string) (*types.User, error)
 	CreateUser(context.Context, *types.User) (*types.User, error)
@@ -25,11 +30,15 @@ type MongoUserStore struct {
 	collection *mongo.Collection
 }
 
-func NewMongoUserStore(client *mongo.Client) *MongoUserStore {
+func NewMongoUserStore(client *mongo.Client, dbName string) *MongoUserStore {
 	return &MongoUserStore{
 		client:     client,
-		collection: client.Database(DBNAME).Collection(userCollection),
+		collection: client.Database(dbName).Collection(userCollection),
 	}
+}
+
+func (m *MongoUserStore) Drop(ctx context.Context) error {
+	return m.collection.Drop(ctx)
 }
 
 func (m *MongoUserStore) GetUsers(ctx context.Context) ([]*types.User, error) {
