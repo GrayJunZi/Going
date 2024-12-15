@@ -34,7 +34,7 @@ func (s *MongoRoomStore) InsertRoom(ctx context.Context, room *types.Room) (*typ
 	}
 	room.Id = resp.InsertedID.(primitive.ObjectID)
 
-	s.HotelStore.UpdateHotel(ctx, room.HotelId, &types.UpdateHoelParams{
+	s.HotelStore.Update(ctx, room.HotelId, &types.UpdateHoelParams{
 		RoomId: room.Id,
 	})
 	return room, nil
