@@ -1483,3 +1483,5 @@ docker run -d -p 27017:27017 --name mongodb mongodb/mongodb-community-server:lat
 ```bash
 go get golang.org/x/crypto/bcrypt
 ```
+
+### (6). 设置数据库种子脚本

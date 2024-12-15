@@ -26,7 +26,6 @@ type UserStore interface {
 
 type MongoUserStore struct {
 	client     *mongo.Client
-	dbName     string
 	collection *mongo.Collection
 }
 
