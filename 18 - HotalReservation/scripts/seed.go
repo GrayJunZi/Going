@@ -7,6 +7,7 @@ import (
 
 	"github.com/grayjunzi/hotel-reservation/db"
 	"github.com/grayjunzi/hotel-reservation/types"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -23,20 +24,21 @@ func seedHotel(name string, location string, rating int) {
 		Name:     name,
 		Location: location,
 		Rating:   rating,
+		Rooms:    []primitive.ObjectID{},
 	}
 
 	rooms := []types.Room{
 		{
-			Type:      types.SingleRoomType,
-			BasePrice: 99.9,
+			Size:  "small",
+			Price: 99.9,
 		},
 		{
-			Type:      types.DoubleRoomType,
-			BasePrice: 189.9,
+			Size:  "normal",
+			Price: 199.9,
 		},
 		{
-			Type:      types.DeluxeRoomType,
-			BasePrice: 199.9,
+			Size:  "kingsize",
+			Price: 299.9,
 		},
 	}
 
@@ -48,7 +50,7 @@ func seedHotel(name string, location string, rating int) {
 	fmt.Println(insertedHotel)
 	for _, room := range rooms {
 		room.HotelId = insertedHotel.Id
-		insertedRoom, err := roomStore.InsertRoom(ctx, &room)
+		insertedRoom, err := roomStore.Insert(ctx, &room)
 		if err != nil {
 			log.Fatal(err)
 		}
