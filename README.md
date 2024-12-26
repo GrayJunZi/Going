@@ -1487,3 +1487,9 @@ go get golang.org/x/crypto/bcrypt
 ### (6). 设置数据库种子脚本
 
 ### (7). Hotel API
+
+### (8). 安装JWT
+
+```shell
+go get -u github.com/golang-jwt/jwt/v5
+```
