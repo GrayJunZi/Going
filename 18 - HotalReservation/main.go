@@ -73,6 +73,7 @@ func main() {
 	// booking handlers
 	admin.Get("/booking", bookingHandler.GetBookings)
 	v1.Get("/booking/:id", bookingHandler.GetBooking)
+	v1.Get("/booking/:id/cancel", bookingHandler.CancelBooking)
 
 	app.Listen(*listenAddr)
 }
