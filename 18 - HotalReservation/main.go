@@ -30,21 +30,23 @@ func main() {
 	}
 
 	var (
-		userStore  = db.NewMongoUserStore(client)
-		hotelStore = db.NewMongoHotelStore(client)
-		roomStore  = db.NewMongoRoomStore(client, hotelStore)
-		store      = &db.Store{
-			User:  userStore,
-			Hotel: hotelStore,
-			Room:  roomStore,
+		userStore    = db.NewMongoUserStore(client)
+		hotelStore   = db.NewMongoHotelStore(client)
+		roomStore    = db.NewMongoRoomStore(client, hotelStore)
+		bookingStore = db.NewMongoBookingStore(client)
+		store        = &db.Store{
+			User:    userStore,
+			Hotel:   hotelStore,
+			Room:    roomStore,
+			Booking: bookingStore,
 		}
-		userHandler    = api.NewUserHandler(userStore)
-		hotelHandler   = api.NewHotelHandler(store)
-		authHandler    = api.NewAuthHandler(userStore)
-		bookingHandler = api.NewRoomHandler(store)
-		app            = fiber.New(config)
-		auth           = app.Group("/api")
-		v1             = app.Group("/api/v1", middleware.JWTAuthentication(userStore))
+		userHandler  = api.NewUserHandler(userStore)
+		hotelHandler = api.NewHotelHandler(store)
+		authHandler  = api.NewAuthHandler(userStore)
+		roomHandler  = api.NewRoomHandler(store)
+		app          = fiber.New(config)
+		auth         = app.Group("/api")
+		v1           = app.Group("/api/v1", middleware.JWTAuthentication(userStore))
 	)
 
 	// Auth
@@ -62,8 +64,9 @@ func main() {
 	v1.Get("/hotel/:id", hotelHandler.GetHotel)
 	v1.Get("/hotel/:id/rooms", hotelHandler.GetRooms)
 
-	// booking handlers
-	v1.Post("/room/:id/book", bookingHandler.BookRoom)
+	// room handlers
+	v1.Get("/room", roomHandler.GetRooms)
+	v1.Post("/room/:id/book", roomHandler.BookRoom)
 
 	app.Listen(*listenAddr)
 }
