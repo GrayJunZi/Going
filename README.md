@@ -6,8 +6,8 @@ Full Time Go Dev
 
 1. [x] 介绍
 2. [x] Golang 入门
-3. [ ] 掌握并发
-4. [ ] 酒店预订项目 JSON API
+3. [x] 掌握并发
+4. [x] 酒店预订项目 JSON API
 5. [ ] 构建微服务
 6. [ ] 找工作指南
 7. [ ] 掌握核心区块链开发
@@ -1493,3 +1493,8 @@ go get golang.org/x/crypto/bcrypt
 ```shell
 go get -u github.com/golang-jwt/jwt/v5
 ```
+
+# 五、微服务
+
+## 20. 计算器
+
